@@ -18,8 +18,8 @@ const Navbar = () => {
 	return (
 		<nav>
 			<div className="container nav__container">
-				<Link to="/" className="logo font-bold text-xl" onClick={handleNavToggle}>
-					TANDRUST-360
+				<Link to="/" className="logo font-bold text-lg" onClick={handleNavToggle}>
+					TANDURUST-360
 				</Link>
 				<ul
 					className={`nav__links ${isNavShowing ? "show__nav" : "hide__nav"}`}

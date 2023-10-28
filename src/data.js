@@ -26,6 +26,14 @@ export const links = [
     {
         name:"Workout",
         path :'/stream'
+    },
+    {
+        name:'Tracker',
+        path:'/tracker'
+    },
+    {
+        name:'Dashboard',
+        path:'/dashboard'
     }
 ]
 

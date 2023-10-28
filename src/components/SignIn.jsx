@@ -19,6 +19,9 @@ const SignIn = () => {
       });
   };
 
+  
+  
+
   return (
     <div className="sign-in-container mt-32 flex justify-center">
       <form onSubmit={signIn}>
@@ -31,16 +34,16 @@ const SignIn = () => {
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mx-6 flex justify-center px-3 w-[50vh] bg-black"
+          className="mx-6 flex justify-center px-3 w-[50vh] bg-black rounded-lg"
         ></input>
         <input
           type="password"
           placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mx-6 flex justify-center mt-4 px-3 w-[50vh] bg-black"
+          className="mx-6 flex justify-center mt-4 px-3 w-[50vh] bg-black rounded-lg"
         ></input>
-        <button className=" mx-6 bg-black my-4 px-3 rounded-lg text-blue-500 w-[15vh]" type="submit">Login</button>
+        <button className=" mx-6 bg-black my-4 rounded-lg font-bold text-blue-400 w-[15vh]" type="submit">Login</button>
         </div>
         <Lottie className="h-[40vh] bg-blue-100 w-[50vh] flex justify-center rounded-xl" animationData={animationData}/>
         </div>
