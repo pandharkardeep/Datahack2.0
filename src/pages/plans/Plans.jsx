@@ -8,7 +8,7 @@ import Card from "../../UI/Card";
 const Plans = () => {
 	return (
 		<>
-			<Header title="Membership Plans" image="https://th.bing.com/th/id/OIP.GOiGH5VHzH1jOGcjQJFDQgHaEl?w=301&h=186&c=7&r=0&o=5&dpr=1.1&pid=1.7">
+			<Header title="Membership Plans" image="https://images.unsplash.com/photo-1593234270607-66cc705a0aaa?auto=format&fit=crop&q=80&w=1770&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
 				Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque quisquam iure, labore sed esse sapiente voluptate tenetur? Temporibus, impedit error.
 			</Header>
 			<section className="plans">

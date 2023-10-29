@@ -60,7 +60,7 @@ const ExerciseForm = () => {
             />
           </label>
         </div>
-        <button type="submit" className='my-2 bg-white px-3 text-blue-600 rounded-xl text-base'>Submit</button>
+        <button type="submit" className='my-2 bg-white px-3 text-blue-600 rounded-lg text-base'>Submit</button>
       </form>
     </div>
   );

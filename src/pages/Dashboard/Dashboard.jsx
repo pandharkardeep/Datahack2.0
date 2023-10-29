@@ -127,8 +127,8 @@ export default function App() {
   return (
     <>
     <h2 className="mt-28 px-4 flex justify-center text-blue-200 font-bold">Have a look into your analytics!</h2>
-    <h3 className="px-8 font-bold mt-8 underline">1. Squat Analysis</h3>
-    <div className="flex flex-row">
+    <h3 className="px-8 font-bold mt-8">1. Squat Analysis</h3>
+    <div className="flex flex-row justify-center">
     <LineChart
       width={500}
       height={300}
@@ -149,10 +149,10 @@ export default function App() {
       <Line
         type="monotone"
         dataKey="squat_weight"
-        stroke="#8884d8"
+        stroke="#ffffff"
         activeDot={{ r: 8 }}
       />
-      <Line type="monotone" dataKey="squat_tot" stroke="#82ca9d" />
+      <Line type="monotone" dataKey="squat_tot" stroke="#1F51FF" />
     </LineChart>
      
      <ComposedChart
@@ -178,8 +178,8 @@ export default function App() {
     </div>
 
 
-    <h3 className="px-8 font-bold mt-8 underline">2. Press Analysis</h3>
-    <div className="flex flex-row">
+    <h3 className="px-8 font-bold mt-8">2. Press Analysis</h3>
+    <div className="flex flex-row justify-center">
     <LineChart
       width={500}
       height={300}
@@ -200,10 +200,10 @@ export default function App() {
       <Line
         type="monotone"
         dataKey="press_weight"
-        stroke="#8884d8"
+        stroke="#ffffff"
         activeDot={{ r: 8 }}
       />
-      <Line type="monotone" dataKey="press_tot" stroke="#82ca9d" />
+      <Line type="monotone" dataKey="press_tot" stroke="#1F51FF" />
     </LineChart>
      
      <ComposedChart
@@ -229,8 +229,8 @@ export default function App() {
     </div>
 
 
-    <h3 className="px-8 font-bold mt-8 underline">3. Curl Analysis</h3>
-    <div className="flex flex-row">
+    <h3 className="px-8 font-bold mt-8">3. Curl Analysis</h3>
+    <div className="flex flex-row justify-center">
     <LineChart
       width={500}
       height={300}
@@ -251,10 +251,10 @@ export default function App() {
       <Line
         type="monotone"
         dataKey="curl_weight"
-        stroke="#8884d8"
+        stroke="#ffffff"
         activeDot={{ r: 8 }}
       />
-      <Line type="monotone" dataKey="curl_tot" stroke="#82ca9d" />
+      <Line type="monotone" dataKey="curl_tot" stroke="#1F51FF" />
     </LineChart>
      
      <ComposedChart
@@ -280,8 +280,8 @@ export default function App() {
     </div>
 
 
-    <h3 className="px-8 font-bold mt-8 underline">4. BMI and Heart Rate</h3>
-    <div className="flex flex-row">
+    <h3 className="px-8 font-bold mt-8">4. BMI and Heart Rate</h3>
+    <div className="flex flex-row justify-center">
     <LineChart
       width={500}
       height={300}
@@ -302,10 +302,10 @@ export default function App() {
       <Line
         type="monotone"
         dataKey="bmi"
-        stroke="#8884d8"
+        stroke="#ffffff"
         activeDot={{ r: 8 }}
       />
-      <Line type="monotone" dataKey="heart_rate" stroke="#82ca9d" />
+      <Line type="monotone" dataKey="heart_rate" stroke="#1F51FF" />
     </LineChart>
      
      <ComposedChart

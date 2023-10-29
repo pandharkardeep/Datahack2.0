@@ -28,17 +28,18 @@ export const links = [
         path:'/dashboard'
     },
     {
+        name:'Recommender',
+        path:'/recommender'
+    },
+    {
         name:"Sign Up",
         path:'/login'
     },
-    {
-        name:"Sign In",
-        path :'/signin'
-    }
     // {
-    //     name:'Reccomender',
-    //     path:'/recommender'
-    // }
+    //     name:"Sign In",
+    //     path :'/signin'
+    // },
+   
 ]
 
 
