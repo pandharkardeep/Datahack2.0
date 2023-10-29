@@ -71,7 +71,8 @@ class VideoProcessor:
         self.sequence_length = 30
         self.colors = [(245,117,16), (117,245,16), (16,117,245)]
         self.threshold = 0.5
-        
+        self.isCorrectPosture = True
+
         # Detection variables
         self.sequence = []
         self.current_action = ''
@@ -89,10 +90,16 @@ class VideoProcessor:
         This function draws keypoints and landmarks detected by the human pose estimation model
         
         """
-        mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                    mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2), 
-                                    mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2) 
-                                    )
+        if self.isCorrectPosture:
+            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                                        mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2), 
+                                        mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2) 
+                                        )
+        else:
+            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                                        mp_drawing.DrawingSpec(color=(16,117,245), thickness=2, circle_radius=2), 
+                                        mp_drawing.DrawingSpec(color=(16,117,245), thickness=2, circle_radius=2) 
+                                        )
         return
     
     def extract_keypoints(self, results):
@@ -148,6 +155,13 @@ class VideoProcessor:
                             )
         return
 
+    def angle_of_vector(self,x, y):
+        # print("Hello")
+        return math.degrees(math.atan2(-y, x))
+
+    def angle_of_line(self,x1, y1, x2, y2):
+        return math.degrees(math.atan2(-(y2-y1), x2-x1))
+    
     def count_reps(self, image, landmarks, mp_pose):
         """
         Counts repetitions of each exercise. Global count and stage (i.e., state) variables are updated within this function.
@@ -159,21 +173,27 @@ class VideoProcessor:
             shoulder = self.get_coordinates(landmarks, mp_pose, 'left', 'shoulder')
             elbow = self.get_coordinates(landmarks, mp_pose, 'left', 'elbow')
             wrist = self.get_coordinates(landmarks, mp_pose, 'left', 'wrist')
-            
-            # calculate elbow angle
-            angle = self.calculate_angle(shoulder, elbow, wrist)
-            
-            # curl counter logic
-            if angle < 30:
-                self.curl_stage = "up" 
-            if angle > 140 and self.curl_stage =='up':
-                self.curl_stage="down"  
-                self.curl_counter +=1
-            self.press_stage = None
-            self.squat_stage = None
+            self.isCorrectPosture = True
+            correctness_angle = self.angle_of_line(wrist[0],wrist[1],shoulder[0],shoulder[1])
+            if correctness_angle > 130 or correctness_angle < 85:
+                self.isCorrectPosture = False
+            else:
+                self.isCorrectPosture = True
+            if self.isCorrectPosture:
+                # calculate elbow angle
+                angle = self.calculate_angle(shoulder, elbow, wrist)
                 
-            # Viz joint angle
-            self.viz_joint_angle(image, angle, elbow)
+                # curl counter logic
+                if angle < 30:
+                    self.curl_stage = "up" 
+                if angle > 140 and self.curl_stage =='up':
+                    self.curl_stage="down"  
+                    self.curl_counter +=1
+                self.press_stage = None
+                self.squat_stage = None
+                    
+                # Viz joint angle
+                self.viz_joint_angle(image, angle, elbow)
             
         elif self.current_action == 'press':           
             # Get coords
@@ -181,24 +201,31 @@ class VideoProcessor:
             elbow = self.get_coordinates(landmarks, mp_pose, 'left', 'elbow')
             wrist = self.get_coordinates(landmarks, mp_pose, 'left', 'wrist')
 
-            # Calculate elbow angle
-            elbow_angle = self.calculate_angle(shoulder, elbow, wrist)
+            if shoulder[0] > wrist[0]:
+                self.isCorrectPosture = False
+            else:
+                self.isCorrectPosture = True
             
-            # Compute distances between joints
-            shoulder2elbow_dist = abs(math.dist(shoulder,elbow))
-            shoulder2wrist_dist = abs(math.dist(shoulder,wrist))
-            
-            # Press counter logic
-            if (elbow_angle > 130) and (shoulder2elbow_dist < shoulder2wrist_dist):
-                self.press_stage = "up"
-            if (elbow_angle < 50) and (shoulder2elbow_dist > shoulder2wrist_dist) and (self.press_stage =='up'):
-                self.press_stage='down'
-                self.press_counter += 1
-            self.curl_stage = None
-            self.squat_stage = None
+            if self.isCorrectPosture:
+                # Calculate elbow angle
+                elbow_angle = self.calculate_angle(shoulder, elbow, wrist)
                 
-            # Viz joint angle
-            self.viz_joint_angle(image, elbow_angle, elbow)
+                # Compute distances between joints
+                shoulder2elbow_dist = abs(math.dist(shoulder,elbow))
+                shoulder2wrist_dist = abs(math.dist(shoulder,wrist))
+                
+                # Press counter logic
+                if (elbow_angle > 130) and (shoulder2elbow_dist < shoulder2wrist_dist):
+                    self.press_stage = "up"
+                if (elbow_angle < 50) and (shoulder2elbow_dist > shoulder2wrist_dist) and (self.press_stage =='up'):
+                    self.press_stage='down'
+                    self.press_counter += 1
+                self.curl_stage = None
+                self.squat_stage = None
+                    
+                # Viz joint angle
+                self.viz_joint_angle(image, elbow_angle, elbow)
+            
             
         elif self.current_action == 'squat':
             # Get coords
@@ -213,27 +240,33 @@ class VideoProcessor:
             right_knee = self.get_coordinates(landmarks, mp_pose, 'right', 'knee')
             right_ankle = self.get_coordinates(landmarks, mp_pose, 'right', 'ankle')
             
-            # Calculate knee angles
-            left_knee_angle = self.calculate_angle(left_hip, left_knee, left_ankle)
-            right_knee_angle = self.calculate_angle(right_hip, right_knee, right_ankle)
+            if abs(left_knee[0] - right_knee[0]) < abs(left_shoulder[0] - right_shoulder[0]):
+                self.isCorrectPosture = False
+            else:
+                self.isCorrectPosture = True
             
-            # Calculate hip angles
-            left_hip_angle = self.calculate_angle(left_shoulder, left_hip, left_knee)
-            right_hip_angle = self.calculate_angle(right_shoulder, right_hip, right_knee)
-            
-            # Squat counter logic
-            thr = 165
-            if (left_knee_angle < thr) and (right_knee_angle < thr) and (left_hip_angle < thr) and (right_hip_angle < thr):
-                self.squat_stage = "down"
-            if (left_knee_angle > thr) and (right_knee_angle > thr) and (left_hip_angle > thr) and (right_hip_angle > thr) and (self.squat_stage =='down'):
-                self.squat_stage='up'
-                self.squat_counter += 1
-            self.curl_stage = None
-            self.press_stage = None
+            if self.isCorrectPosture:
+                # Calculate knee angles
+                left_knee_angle = self.calculate_angle(left_hip, left_knee, left_ankle)
+                right_knee_angle = self.calculate_angle(right_hip, right_knee, right_ankle)
                 
-            # Viz joint angles
-            self.viz_joint_angle(image, left_knee_angle, left_knee)
-            self.viz_joint_angle(image, left_hip_angle, left_hip)
+                # Calculate hip angles
+                left_hip_angle = self.calculate_angle(left_shoulder, left_hip, left_knee)
+                right_hip_angle = self.calculate_angle(right_shoulder, right_hip, right_knee)
+                
+                # Squat counter logic
+                thr = 165
+                if (left_knee_angle < thr) and (right_knee_angle < thr) and (left_hip_angle < thr) and (right_hip_angle < thr):
+                    self.squat_stage = "down"
+                if (left_knee_angle > thr) and (right_knee_angle > thr) and (left_hip_angle > thr) and (right_hip_angle > thr) and (self.squat_stage =='down'):
+                    self.squat_stage='up'
+                    self.squat_counter += 1
+                self.curl_stage = None
+                self.press_stage = None
+                    
+                # Viz joint angles
+                self.viz_joint_angle(image, left_knee_angle, left_knee)
+                self.viz_joint_angle(image, left_hip_angle, left_hip)
             
         else:
             pass
@@ -302,13 +335,18 @@ class VideoProcessor:
                 pass
 
             # Display graphical information
-            cv2.rectangle(image, (0,0), (640, 40), self.colors[np.argmax(res)], -1)
-            cv2.putText(image, 'curl ' + str(self.curl_counter), (3,30), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-            cv2.putText(image, 'press ' + str(self.press_counter), (240,30), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-            cv2.putText(image, 'squat ' + str(self.squat_counter), (490,30), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+            if self.isCorrectPosture:
+                cv2.rectangle(image, (0,0), (640, 40), self.colors[np.argmax(res)], -1)
+                cv2.putText(image, 'curl ' + str(self.curl_counter), (3,30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                cv2.putText(image, 'press ' + str(self.press_counter), (240,30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                cv2.putText(image, 'squat ' + str(self.squat_counter), (490,30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+            else:
+                cv2.rectangle(image, (0,0), (640, 40), self.colors[np.argmax(res)], -1)
+                cv2.putText(image, 'Incorrect Posture ' + str(self.curl_counter), (3,30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
           
         # return cv2.flip(image, 1)
         return image
@@ -326,8 +364,6 @@ class VideoProcessor:
         # img = frame.to_ndarray(format="bgr24")
         img = self.process(frame)
         return img
-      
-
 
 
 def main():
