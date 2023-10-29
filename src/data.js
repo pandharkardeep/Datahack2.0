@@ -16,14 +16,6 @@ export const links = [
         path: '/plans'
     },
     {
-        name:"Sign Up",
-        path:'/login'
-    },
-    {
-        name:"Sign In",
-        path :'/signin'
-    },
-    {
         name:"Workout",
         path :'/stream'
     },
@@ -35,6 +27,14 @@ export const links = [
         name:'Dashboard',
         path:'/dashboard'
     },
+    {
+        name:"Sign Up",
+        path:'/login'
+    },
+    {
+        name:"Sign In",
+        path :'/signin'
+    }
     // {
     //     name:'Reccomender',
     //     path:'/recommender'

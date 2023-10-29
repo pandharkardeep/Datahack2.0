@@ -367,7 +367,7 @@ class VideoProcessor:
 
 
 def main():
-    st.title("OpenCV Streamlit App")
+    st.title("Tandurust-360")
 
     video_capture = cv2.VideoCapture(0)
 
