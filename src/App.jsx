@@ -14,6 +14,7 @@ import SignIn from "./components/SignIn";
 import SignUp from './components/SignUp';
 import Tracker from './pages/tracker/Tracker'
 import Dashboard from './pages/Dashboard/Dashboard'
+// import Recommender from './pages/recommender/Recommender'
 // import FaceDetection from './components/FaceDetection'
 import Streamlit from "./components/Streamlit";
 // import Login from "./pages/login/Login";
@@ -35,6 +36,7 @@ const App = () => {
 				<Route path="stream" element={<Streamlit/>}/>
 				<Route path="tracker" element={<Tracker/>}/>
 				<Route path="dashboard" element={<Dashboard/>}/>
+				{/* <Route path="recommender" element={<Recommender/>}/> */}
 				{/* <Route path="login" element={<Login/>}/> */}
 				<Route path="*" element={<NotFound />} />
 			</Routes>

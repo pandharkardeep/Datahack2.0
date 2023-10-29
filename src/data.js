@@ -34,7 +34,11 @@ export const links = [
     {
         name:'Dashboard',
         path:'/dashboard'
-    }
+    },
+    // {
+    //     name:'Reccomender',
+    //     path:'/recommender'
+    // }
 ]
 
 
